@@ -18,7 +18,6 @@ BuildRequires : Vulkan-Headers-dev Vulkan-Loader-dev Vulkan-Tools
 BuildRequires : Z3-dev
 BuildRequires : Z3-dev32
 BuildRequires : Z3-staticdev
-BuildRequires : Z3-staticdev32
 BuildRequires : binutils-dev
 BuildRequires : binutils-extras
 BuildRequires : bison
@@ -89,10 +88,7 @@ BuildRequires : ncurses-lib32
 BuildRequires : ninja
 BuildRequires : perl
 BuildRequires : pkg-config
-BuildRequires : pkgconfig(32isl)
-BuildRequires : pkgconfig(32libedit)
 BuildRequires : pkgconfig(32libffi)
-BuildRequires : pkgconfig(32pet)
 BuildRequires : pkgconfig(libedit)
 BuildRequires : pkgconfig(libffi)
 BuildRequires : pkgconfig(zlib)
@@ -109,7 +105,9 @@ BuildRequires : texinfo
 BuildRequires : util-linux
 BuildRequires : valgrind-dev
 BuildRequires : xz-dev
+BuildRequires : xz-dev32
 BuildRequires : xz-staticdev
+BuildRequires : xz-staticdev32
 BuildRequires : yaml
 BuildRequires : yaml-cpp
 BuildRequires : zlib-dev
@@ -143,7 +141,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1621163163
+export SOURCE_DATE_EPOCH=1621164519
 unset LD_AS_NEEDED
 mkdir -p clr-build32
 pushd clr-build32
@@ -178,7 +176,85 @@ export LDFLAGS="-fno-stack-protector -pthread -lpthread -static-libgcc -static-l
 export ASFLAGS="--32"
 export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
 ## altflags1_32 end
-%cmake -DLIB_INSTALL_DIR:PATH=/usr/lib32 -DCMAKE_INSTALL_LIBDIR=/usr/lib32 -DLIB_SUFFIX=32 ../llvm
+# pushd ..
+# sd "flto=full" "flto=16" -r "*.cmake"
+# popd
+cmake -G Ninja ../llvm \
+    -DBUILD_SHARED_LIBS:BOOL=OFF \
+    -DLIB_INSTALL_DIR=%{_libdir} \
+    -DLIB_SUFFIX=32 \
+    -DLLVM_LIBDIR_SUFFIX=32 \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_C_COMPILER=gcc \
+    -DCMAKE_CXX_COMPILER=g++ \
+    -DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_SBINDIR=%{_sbindir} \
+    -DLLVM_PARALLEL_COMPILE_JOBS:STRING=16 \
+    -DLLVM_PARALLEL_LINK_JOBS:STRING=16 \
+    -DCMAKE_AR=/usr/bin/gcc-ar \
+    -DCMAKE_NM=/usr/bin/gcc-nm \
+    -DCMAKE_RANLIB=/usr/bin/gcc-ranlib \
+    -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+    -DENABLE_LINKER_BUILD_ID:BOOL=ON \
+    -DCLANG_BUILD_TOOLS:BOOL=OFF \
+    -DCLANG_DEFAULT_LINKER=lld \
+    -DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+    -DLLVM_STATIC_LINK_CXX_STDLIB:BOOL=ON \
+    -DCLANG_DEFAULT_CXX_STDLIB:STRING=libstdc++ \
+    -DCLANG_ENABLE_STATIC_ANALYZER:BOOL=ON \
+    -DCLANG_INCLUDE_TESTS:BOOL=OFF \
+    -DCLANG_LINK_CLANG_DYLIB:BOOL=OFF \
+    -DLLVM_LINK_LLVM_DYLIB:BOOL=OFF \
+    -DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
+    -DLIBCLANG_BUILD_STATIC:BOOL=ON \
+    -DCOMPILER_RT_BUILD_SANITIZERS:BOOL=OFF \
+    -DCOMPILER_RT_BUILD_XRAY:BOOL=OFF \
+    -DLLVM_BINUTILS_INCDIR=/usr/include \
+    -DLLVM_BUILD_EXAMPLES:BOOL=OFF \
+    -DLLVM_BUILD_RUNTIME:BOOL=ON \
+    -DLLVM_BUILD_TOOLS:BOOL=OFF \
+    -DLLVM_BUILD_UTILS:BOOL=OFF \
+    -DLLVM_TOOL_CLANG_BUILD:BOOL=OFF \
+    -DLLVM_TOOL_LLD_BUILD:BOOL=OFF \
+    -DLLVM_ENABLE_ASSERTIONS:BOOL=OFF \
+    -DLLVM_ENABLE_BINDINGS:BOOL=OFF \
+    -DLLVM_ENABLE_DOXYGEN:BOOL=OFF \
+    -DLLVM_ENABLE_EH:BOOL=ON \
+    -DLLVM_ENABLE_LIBXML2:BOOL=ON \
+    -DLLVM_ENABLE_RTTI:BOOL=ON \
+    -DLLVM_REQUIRES_RTTI:BOOL=ON \
+    -DLLVM_ENABLE_THREADS:BOOL=ON \
+    -DLLVM_ENABLE_Z3_SOLVER:BOOL=ON \
+    -DLLVM_ENABLE_LIBEDIT:BOOL=OFF \
+    -DLLVM_ENABLE_TERMINFO:BOOL=OFF \
+    -DLLVM_ENABLE_ZLIB:BOOL=ON \
+    -DLLVM_ENABLE_FFI:BOOL=ON \
+    -DFFI_INCLUDE_DIR=`pkg-config --variable=includedir libffi` \
+    -DCLANG_ENABLE_ARCMT:BOOL=OFF \
+    -DLLVM_INCLUDE_TESTS:BOOL=OFF \
+    -DLLVM_INCLUDE_TOOLS:BOOL=OFF \
+    -DLLVM_INSTALL_UTILS:BOOL=OFF \
+    -DCMAKE_DISABLE_FIND_PACKAGE_CUDA:BOOL=ON \
+    -DLLVM_OPTIMIZED_TABLEGEN:BOOL=ON \
+    -DLLVM_ENABLE_PIC=ON \
+    -DLLVM_TARGETS_TO_BUILD="X86" \
+    -DLLVM_TOOL_CLANG_TOOLS_EXTRA_BUILD:BOOL=OFF \
+    -DLLVM_TOOL_COMPILER_RT_BUILD:BOOL=OFF \
+    -DLLVM_USE_LINKER:STRING=bfd \
+    -DLLVM_HOST_TRIPLE="x86_64-generic-linux" \
+    -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
+    -DLLVM_ENABLE_PLUGINS:BOOL=ON \
+    -DLLVM_EXPORT_SYMBOLS_FOR_PLUGINS:BOOL=ON \
+    -DLLVM_ENABLE_PROJECTS="llvm;clang;clang-tools-extra;lld;parallel-libs;polly" \
+    -DCMAKE_C_FLAGS="-fno-stack-protector -pthread -lpthread -static-libgcc -static-libstdc++ -O3 -fno-lto --param=lto-max-streaming-parallelism=16 -ffat-lto-objects -fomit-frame-pointer -fuse-ld=bfd -fuse-linker-plugin -march=native -mtune=native -Wall -Wl,-O2 -Wl,--build-id=sha1 -Wl,-z,now -Wl,-z,relro -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -malign-data=cacheline -Wl,-sort-common -fdevirtualize-at-ltrans -flifetime-dse=1 -Wl,--as-needed -fPIC -pipe -fgraphite-identity -floop-nest-optimize -floop-block -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -Wl,-z,max-page-size=0x1000 -feliminate-unused-debug-types -fno-semantic-interposition -m32 -mstackrealign" \
+    -DCMAKE_CXX_FLAGS="-fno-stack-protector -pthread -lpthread -static-libgcc -static-libstdc++ -O3 -fno-lto --param=lto-max-streaming-parallelism=16 -ffat-lto-objects -fomit-frame-pointer -fuse-ld=bfd -fuse-linker-plugin -march=native -mtune=native -Wall -Wl,-O2 -Wl,--build-id=sha1 -Wl,-z,now -Wl,-z,relro -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -malign-data=cacheline -Wl,-sort-common -fdevirtualize-at-ltrans -flifetime-dse=1 -Wl,--as-needed -fPIC -pipe -fgraphite-identity -floop-nest-optimize -floop-block -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -Wl,-z,max-page-size=0x1000 -feliminate-unused-debug-types -fno-semantic-interposition -m32 -mstackrealign" \
+    -DCMAKE_EXE_LINKER_FLAGS="-fno-stack-protector -pthread -lpthread -static-libgcc -static-libstdc++ -O3 -fno-lto --param=lto-max-streaming-parallelism=16 -ffat-lto-objects -fomit-frame-pointer -fuse-ld=bfd -fuse-linker-plugin -march=native -mtune=native -Wall -Wl,-O2 -Wl,--build-id=sha1 -Wl,-z,now -Wl,-z,relro -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -malign-data=cacheline -Wl,-sort-common -fdevirtualize-at-ltrans -flifetime-dse=1 -Wl,--as-needed -fPIC -pipe -fgraphite-identity -floop-nest-optimize -floop-block -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -Wl,-z,max-page-size=0x1000 -feliminate-unused-debug-types -fno-semantic-interposition -m32 -mstackrealign" \
+    -DCMAKE_MODULE_LINKER_FLAGS="-fno-stack-protector -pthread -lpthread -static-libgcc -static-libstdc++ -O3 -fno-lto --param=lto-max-streaming-parallelism=16 -ffat-lto-objects -fomit-frame-pointer -fuse-ld=bfd -fuse-linker-plugin -march=native -mtune=native -Wall -Wl,-O2 -Wl,--build-id=sha1 -Wl,-z,now -Wl,-z,relro -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -malign-data=cacheline -Wl,-sort-common -fdevirtualize-at-ltrans -flifetime-dse=1 -Wl,--as-needed -fPIC -pipe -fgraphite-identity -floop-nest-optimize -floop-block -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -Wl,-z,max-page-size=0x1000 -feliminate-unused-debug-types -fno-semantic-interposition -m32 -mstackrealign" \
+    -DCMAKE_SHARED_LINKER_FLAGS="-fno-stack-protector -pthread -lpthread -static-libgcc -static-libstdc++ -O3 -fno-lto --param=lto-max-streaming-parallelism=16 -ffat-lto-objects -fomit-frame-pointer -fuse-ld=bfd -fuse-linker-plugin -march=native -mtune=native -Wall -Wl,-O2 -Wl,--build-id=sha1 -Wl,-z,now -Wl,-z,relro -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -malign-data=cacheline -Wl,-sort-common -fdevirtualize-at-ltrans -flifetime-dse=1 -Wl,--as-needed -fPIC -pipe -fgraphite-identity -floop-nest-optimize -floop-block -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -Wl,-z,max-page-size=0x1000 -feliminate-unused-debug-types -fno-semantic-interposition -m32 -mstackrealign" \
+    -DGCC_INSTALL_PREFIX="/usr" \
+    -DLLVM_BUILD_32_BITS:BOOL=ON \
+    -Wno-dev
 ninja --verbose  %{?_smp_mflags}
 ## ccache stats
 ccache -s
@@ -187,7 +263,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1621163163
+export SOURCE_DATE_EPOCH=1621164519
 rm -rf %{buildroot}
 pushd clr-build32
 %ninja_install32
@@ -198,37 +274,6 @@ then
     popd
 fi
 popd
-## install_append content
-# Rename the tools to have a versioned suffix and symlink back
-pushd %{buildroot}/usr/bin
-mv clang ..
-VERSION=%{version}
-VERSION=${VERSION%%%%.*}
-for f in *; do
-case "$f" in
-*-$VERSION)
-# Already versioned, leave it alone
-continue
-;;
-esac
-if [ -L "$f" ]; then
-# Retarget the symlink
-ln -s -f `readlink $f`-$VERSION $f
-fi
-mv $f $f-$VERSION
-ln -s -f $f-$VERSION $f
-done
-mv ../clang .
-popd
-
-# Ditto for the gold plugin
-pushd %{buildroot}/usr/lib64
-mv LLVMgold.so LLVMgold-$VERSION.so
-ln -s LLVMgold-$VERSION.so LLVMgold.so
-mkdir -p ../lib/bfd-plugins
-ln -s ../../lib64/LLVMgold-$VERSION.so ../lib/bfd-plugins
-popd
-## install_append end
 
 %files
 %defattr(-,root,root,-)
