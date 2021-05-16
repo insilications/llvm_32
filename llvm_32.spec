@@ -141,7 +141,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1621164519
+export SOURCE_DATE_EPOCH=1621164616
 unset LD_AS_NEEDED
 mkdir -p clr-build32
 pushd clr-build32
@@ -255,6 +255,11 @@ cmake -G Ninja ../llvm \
     -DGCC_INSTALL_PREFIX="/usr" \
     -DLLVM_BUILD_32_BITS:BOOL=ON \
     -Wno-dev
+## make_prepend32 content
+#sd "/usr/lib32/libz3.so" "/usr/lib32/libz3.a" $(fd -uu --glob *.ninja)
+sd "/usr/lib32/libz.so" "/usr/lib32/libz.a" $(fd -uu --glob *.ninja)
+sd "/usr/lib32/libxml2.so" "/usr/lib32/libxml2.a /usr/lib32/liblzma.a /usr/lib32/libz.a" $(fd -uu --glob *.ninja)
+## make_prepend32 end
 ninja --verbose  %{?_smp_mflags}
 ## ccache stats
 ccache -s
@@ -263,7 +268,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1621164519
+export SOURCE_DATE_EPOCH=1621164616
 rm -rf %{buildroot}
 pushd clr-build32
 %ninja_install32
