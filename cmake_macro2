@@ -1,0 +1,128 @@
+cmake ../llvm -G Ninja \
+-DCLANG_ENABLE_BOOTSTRAP:BOOL=ON \
+-DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCMAKE_INSTALL_SBINDIR=%{_sbindir} \
+-DLIB_INSTALL_DIR=%{_libdir} \
+-DLIB_SUFFIX=64 \
+-DLLVM_LIBDIR_SUFFIX=64 \
+-DBUILD_SHARED_LIBS:BOOL=OFF \
+-DCLANG_DEFAULT_CXX_STDLIB="libstdc++" \
+-DLLVM_STATIC_LINK_CXX_STDLIB:BOOL=ON \
+-DLLVM_ENABLE_ASSERTIONS:BOOL=OFF \
+-DCLANG_DEFAULT_RTLIB="libgcc" \
+-DCLANG_DEFAULT_UNWINDLIB="libgcc" \
+-DLLVM_TARGETS_TO_BUILD="Native;AMDGPU" \
+-DCLANG_LINK_CLANG_DYLIB:BOOL=OFF \
+-DLLVM_LINK_LLVM_DYLIB:BOOL=OFF \
+-DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
+-DCMAKE_AR=/usr/bin/gcc-ar \
+-DCMAKE_NM=/usr/bin/gcc-nm \
+-DCMAKE_RANLIB=/usr/bin/gcc-ranlib \
+-DCMAKE_BUILD_TYPE=Release \
+-DCMAKE_C_COMPILER=gcc \
+-DCMAKE_CXX_COMPILER=g++ \
+-DCMAKE_JOB_POOLS="full_jobs=10" \
+-DCMAKE_JOB_POOL_COMPILE="full_jobs" \
+-DCMAKE_JOB_POOL_LINK="full_jobs" \
+-DLLVM_ENABLE_PROJECTS="llvm;clang;lld" \
+-DCMAKE_C_FLAGS_RELEASE="-Wl,--as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O2 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -fPIC" \
+-DCMAKE_CXX_FLAGS_RELEASE="-Wl,--as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O2 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -fvisibility-inlines-hidden -pipe -static-libstdc++ -static-libgcc -pthread -fPIC" \
+-DCMAKE_EXE_LINKER_FLAGS_RELEASE="-Wl,--as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O2 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -lpthread -fPIC" \
+-DCMAKE_MODULE_LINKER_FLAGS_RELEASE="-Wl,--as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O2 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -lpthread -fPIC" \
+-DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-Wl,--as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O2 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -lpthread -fPIC" \
+-DENABLE_LINKER_BUILD_ID:BOOL=ON \
+-DFFI_INCLUDE_DIR=`pkg-config --variable=includedir libffi` \
+-DLLVM_BINUTILS_INCDIR=/usr/include \
+-DLLVM_BUILD_EXAMPLES:BOOL=OFF \
+-DLLVM_BUILD_RUNTIME:BOOL=ON \
+-DLLVM_BUILD_TOOLS:BOOL=ON \
+-DCLANG_BUILD_TOOLS:BOOL=ON \
+-DLLVM_TOOL_CLANG_TOOLS_EXTRA_BUILD:BOOL=OFF \
+-DLIBCLANG_BUILD_STATIC:BOOL=ON \
+-DLLVM_INCLUDE_TOOLS:BOOL=ON \
+-DLLVM_ENABLE_BINDINGS:BOOL=OFF \
+-DLLVM_ENABLE_FFI:BOOL=ON \
+-DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+-DLLVM_ENABLE_PIC=ON \
+-DLLVM_ENABLE_RTTI:BOOL=ON \
+-DLLVM_ENABLE_EH:BOOL=ON \
+-DLLVM_ENABLE_ZLIB:BOOL=ON \
+-DLLVM_ENABLE_Z3_SOLVER:BOOL=ON \
+-DLLVM_ENABLE_LIBXML2:BOOL=ON \
+-DCLANG_ENABLE_STATIC_ANALYZER:BOOL=ON \
+-DLLVM_HOST_TRIPLE="x86_64-generic-linux" \
+-DLLVM_INCLUDE_TESTS:BOOL=OFF \
+-DCLANG_INCLUDE_TESTS:BOOL=OFF \
+-DLLVM_INSTALL_UTILS:BOOL=ON \
+-DLLVM_OPTIMIZED_TABLEGEN:BOOL=ON \
+-DLLVM_REQUIRES_RTTI:BOOL=ON \
+-DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
+-DCOMPILER_RT_BUILD_SANITIZERS:BOOL=OFF \
+-DCOMPILER_RT_BUILD_XRAY:BOOL=OFF \
+-DLLVM_TOOL_COMPILER_RT_BUILD:BOOL=OFF \
+-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+-DBOOTSTRAP_CMAKE_JOB_POOLS="full_jobs=10" \
+-DBOOTSTRAP_CMAKE_JOB_POOL_COMPILE="full_jobs" \
+-DBOOTSTRAP_CMAKE_JOB_POOL_LINK="full_jobs" \
+-DBOOTSTRAP_CMAKE_INSTALL_LIBDIR=%{_libdir} \
+-DBOOTSTRAP_CMAKE_INSTALL_PREFIX=/usr \
+-DBOOTSTRAP_CMAKE_INSTALL_SBINDIR=%{_sbindir} \
+-DBOOTSTRAP_LIB_INSTALL_DIR=%{_libdir} \
+-DBOOTSTRAP_LIB_SUFFIX=64 \
+-DBOOTSTRAP_LLVM_LIBDIR_SUFFIX=64 \
+-DBOOTSTRAP_BUILD_SHARED_LIBS:BOOL=OFF \
+-DBOOTSTRAP_CLANG_DEFAULT_CXX_STDLIB="libstdc++" \
+-DBOOTSTRAP_LLVM_STATIC_LINK_CXX_STDLIB:BOOL=ON \
+-DBOOTSTRAP_CLANG_DEFAULT_LINKER=lld \
+-DBOOTSTRAP_CLANG_DEFAULT_RTLIB="libgcc" \
+-DBOOTSTRAP_CLANG_DEFAULT_UNWINDLIB="libgcc" \
+-DBOOTSTRAP_LLVM_TARGETS_TO_BUILD="Native;AMDGPU" \
+-DBOOTSTRAP_LLVM_ENABLE_ASSERTIONS:BOOL=OFF \
+-DBOOTSTRAP_CLANG_LINK_CLANG_DYLIB:BOOL=OFF \
+-DBOOTSTRAP_LLVM_LINK_LLVM_DYLIB:BOOL=OFF \
+-DBOOTSTRAP_LLVM_BUILD_LLVM_DYLIB:BOOL=ON \
+-DBOOTSTRAP_CMAKE_BUILD_TYPE=Release \
+-DBOOTSTRAP_LLVM_ENABLE_PROJECTS="llvm;clang;clang-tools-extra;compiler-rt;lld;parallel-libs;polly;pstl" \
+-DBOOTSTRAP_CMAKE_C_FLAGS_RELEASE="-fno-stack-protector -Wl,--lto-O3 -Wl,--hash-style=gnu -Wl,--enable-new-dtags -Wl,--build-id=sha1 -Wl,--as-needed -flto -fuse-ld=lld -Wno-error -O3 -march=native -mtune=native -Wall -Wl,-O2 -falign-functions=32 -fasynchronous-unwind-tables -funroll-loops -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -fPIC" \
+-DBOOTSTRAP_CMAKE_CXX_FLAGS_RELEASE="-fno-stack-protector -Wl,--lto-O3 -Wl,--hash-style=gnu -Wl,--enable-new-dtags -Wl,--build-id=sha1 -Wl,--as-needed -flto -fuse-ld=lld -Wno-error -O3 -march=native -mtune=native -Wall -Wl,-O2 -falign-functions=32 -fasynchronous-unwind-tables -funroll-loops -Wl,-sort-common -Wp,-D_REENTRANT -fvisibility-inlines-hidden -pipe -static-libstdc++ -static-libgcc -pthread -fPIC" \
+-DBOOTSTRAP_CMAKE_EXE_LINKER_FLAGS_RELEASE="-fno-stack-protector -Wl,--lto-O3 -Wl,--hash-style=gnu -Wl,--enable-new-dtags -Wl,--build-id=sha1 -Wl,--as-needed -flto -fuse-ld=lld -Wno-error -O3 -march=native -mtune=native -Wall -Wl,-O2 -falign-functions=32 -fasynchronous-unwind-tables -funroll-loops -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -lpthread -fPIC" \
+-DBOOTSTRAP_CMAKE_MODULE_LINKER_FLAGS_RELEASE="-fno-stack-protector -Wl,--lto-O3 -Wl,--hash-style=gnu -Wl,--enable-new-dtags -Wl,--build-id=sha1 -Wl,--as-needed -flto -fuse-ld=lld -Wno-error -O3 -march=native -mtune=native -Wall -Wl,-O2 -falign-functions=32 -fasynchronous-unwind-tables -funroll-loops -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -lpthread -fPIC" \
+-DBOOTSTRAP_CMAKE_SHARED_LINKER_FLAGS_RELEASE="-fno-stack-protector -Wl,--lto-O3 -Wl,--hash-style=gnu -Wl,--enable-new-dtags -Wl,--build-id=sha1 -Wl,--as-needed -flto -fuse-ld=lld -Wno-error -O3 -march=native -mtune=native -Wall -Wl,-O2 -falign-functions=32 -fasynchronous-unwind-tables -funroll-loops -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -pthread -lpthread -fPIC" \
+-DBOOTSTRAP_ENABLE_LINKER_BUILD_ID:BOOL=ON \
+-DBOOTSTRAP_FFI_INCLUDE_DIR=`pkg-config --variable=includedir libffi` \
+-DBOOTSTRAP_LLVM_BINUTILS_INCDIR=/usr/include \
+-DBOOTSTRAP_LLVM_BUILD_EXAMPLES:BOOL=OFF \
+-DBOOTSTRAP_LLVM_BUILD_RUNTIME:BOOL=ON \
+-DBOOTSTRAP_LLVM_BUILD_TOOLS:BOOL=ON \
+-DBOOTSTRAP_CLANG_BUILD_TOOLS:BOOL=ON \
+-DBOOTSTRAP_LLVM_TOOL_CLANG_TOOLS_EXTRA_BUILD:BOOL=ON \
+-DBOOTSTRAP_LIBCLANG_BUILD_STATIC:BOOL=ON \
+-DBOOTSTRAP_LLVM_INCLUDE_TOOLS:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_BINDINGS:BOOL=OFF \
+-DBOOTSTRAP_LLVM_ENABLE_FFI:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_LIBCXX:BOOL=OFF \
+-DBOOTSTRAP_LLVM_ENABLE_LLD:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_PIC=ON \
+-DBOOTSTRAP_LLVM_ENABLE_RTTI:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_EH:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_ZLIB:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_Z3_SOLVER:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_LIBXML2:BOOL=ON \
+-DBOOTSTRAP_CLANG_ENABLE_STATIC_ANALYZER:BOOL=ON \
+-DBOOTSTRAP_LLVM_SPIRV_BUILD_EXTERNAL:BOOL=ON \
+-DBOOTSTRAP_LLVM_EXTERNAL_PROJECTS=SPIRV \
+-DBOOTSTRAP_LLVM_EXTERNAL_SPIRV_SOURCE_DIR="../projects/SPIRV" \
+-DBOOTSTRAP_LLVM_HOST_TRIPLE="x86_64-generic-linux" \
+-DBOOTSTRAP_LLVM_INCLUDE_TESTS:BOOL=OFF \
+-DBOOTSTRAP_CLANG_INCLUDE_TESTS:BOOL=OFF \
+-DBOOTSTRAP_LLVM_INSTALL_UTILS:BOOL=ON \
+-DBOOTSTRAP_LLVM_OPTIMIZED_TABLEGEN:BOOL=ON \
+-DBOOTSTRAP_LLVM_REQUIRES_RTTI:BOOL=ON \
+-DBOOTSTRAP_PYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
+-DBOOTSTRAP_COMPILER_RT_BUILD_SANITIZERS:BOOL=OFF \
+-DBOOTSTRAP_COMPILER_RT_BUILD_XRAY:BOOL=OFF \
+-DBOOTSTRAP_LLVM_TOOL_COMPILER_RT_BUILD:BOOL=OFF \
+-DBOOTSTRAP_CMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+-DBOOTSTRAP_LLVM_ENABLE_LTO:STRING=Full \
+-Wno-dev

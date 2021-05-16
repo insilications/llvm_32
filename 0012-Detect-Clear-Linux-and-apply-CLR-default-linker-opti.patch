@@ -1,0 +1,132 @@
+From 3d4bf5f90e856642ea12efb67e372040e6fd5e52 Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Sun, 2 May 2021 20:29:49 -0300
+Subject: [PATCH 12/12] Detect Clear Linux and apply CLR default linker options
+
+---
+ clang/include/clang/Driver/Distro.h   |  4 ++++
+ clang/lib/Driver/Distro.cpp           | 13 +++++++++++++
+ clang/lib/Driver/ToolChains/Linux.cpp | 14 +++++++++-----
+ clang/unittests/Driver/DistroTest.cpp | 16 ++++++++++++++++
+ 4 files changed, 42 insertions(+), 5 deletions(-)
+
+diff --git a/clang/include/clang/Driver/Distro.h b/clang/include/clang/Driver/Distro.h
+index 0e98d00764c1..e62f04033b43 100644
+--- a/clang/include/clang/Driver/Distro.h
++++ b/clang/include/clang/Driver/Distro.h
+@@ -30,6 +30,7 @@ public:
+     // the first and last known member in the family, e.g. IsRedHat().
+     AlpineLinux,
+     ArchLinux,
++    ClearLinux,
+     DebianLenny,
+     DebianSqueeze,
+     DebianWheezy,
+@@ -124,6 +125,9 @@ public:
+   bool IsUbuntu() const {
+     return DistroVal >= UbuntuHardy && DistroVal <= UbuntuHirsute;
+   }
++  bool IsClearLinux() const {
++    return DistroVal == ClearLinux;
++  }
+ 
+   bool IsAlpineLinux() const { return DistroVal == AlpineLinux; }
+ 
+diff --git a/clang/lib/Driver/Distro.cpp b/clang/lib/Driver/Distro.cpp
+index ee4fe841e7ee..8365f61f2df8 100644
+--- a/clang/lib/Driver/Distro.cpp
++++ b/clang/lib/Driver/Distro.cpp
+@@ -200,6 +200,19 @@ static Distro::DistroType DetectDistro(llvm::vfs::FileSystem &VFS) {
+   if (VFS.exists("/etc/gentoo-release"))
+     return Distro::Gentoo;
+ 
++  File = VFS.getBufferForFile("/usr/lib/os-release");
++  if (File) {
++    StringRef Data = File.get()->getBuffer();
++    SmallVector<StringRef, 16> Lines;
++    Data.split(Lines, "\n");
++    Distro::DistroType Version = Distro::UnknownDistro;
++    for (StringRef Line : Lines)
++      if (Version == Distro::UnknownDistro && Line.startswith("ID_LIKE="))
++        Version = llvm::StringSwitch<Distro::DistroType>(Line.substr(7))
++                      .Case("clear-linux-os", Distro::ClearLinux);
++    return Version;
++  }
++
+   return Distro::UnknownDistro;
+ }
+ 
+diff --git a/clang/lib/Driver/ToolChains/Linux.cpp b/clang/lib/Driver/ToolChains/Linux.cpp
+index 9663a7390ada..0810ee2e9c46 100644
+--- a/clang/lib/Driver/ToolChains/Linux.cpp
++++ b/clang/lib/Driver/ToolChains/Linux.cpp
+@@ -225,13 +225,13 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
+ 
+   Distro Distro(D.getVFS(), Triple);
+ 
+-  if (Distro.IsAlpineLinux() || Triple.isAndroid()) {
++  if (Distro.IsAlpineLinux() || Distro.IsClearLinux() || Triple.isAndroid()) {
+     ExtraOpts.push_back("-z");
+     ExtraOpts.push_back("now");
+   }
+ 
+   if (Distro.IsOpenSUSE() || Distro.IsUbuntu() || Distro.IsAlpineLinux() ||
+-      Triple.isAndroid()) {
++      Distro.IsClearLinux() || Triple.isAndroid()) {
+     ExtraOpts.push_back("-z");
+     ExtraOpts.push_back("relro");
+   }
+@@ -286,7 +286,7 @@ Linux::Linux(const Driver &D, const llvm::Triple &Triple, const ArgList &Args)
+   ExtraOpts.push_back("--build-id");
+ #endif
+ 
+-  if (IsAndroid || Distro.IsOpenSUSE())
++  if (IsAndroid || Distro.IsOpenSUSE() || Distro.IsClearLinux())
+     ExtraOpts.push_back("--enable-new-dtags");
+ 
+   // The selection of paths to try here is designed to match the patterns which
+@@ -832,8 +832,12 @@ void Linux::AddIAMCUIncludeArgs(const ArgList &DriverArgs,
+ }
+ 
+ bool Linux::isPIEDefault() const {
+-  return (getTriple().isAndroid() && !getTriple().isAndroidVersionLT(16)) ||
+-          getTriple().isMusl() || getSanitizerArgs().requiresPIE();
++  if ((getTriple().isAndroid() && !getTriple().isAndroidVersionLT(16)) ||
++      getTriple().isMusl() || getSanitizerArgs().requiresPIE())
++    return true;
++
++  Distro Distro(getDriver().getVFS(), getTriple());
++  return Distro.IsClearLinux();
+ }
+ 
+ bool Linux::isNoExecStackDefault() const {
+diff --git a/clang/unittests/Driver/DistroTest.cpp b/clang/unittests/Driver/DistroTest.cpp
+index 7c00a8f66be8..318833938f7c 100644
+--- a/clang/unittests/Driver/DistroTest.cpp
++++ b/clang/unittests/Driver/DistroTest.cpp
+@@ -342,6 +342,22 @@ TEST(DistroTest, DetectGentoo) {
+   ASSERT_TRUE(Gentoo.IsGentoo());
+ }
+ 
++TEST(DistroTest, DetectClearLinux) {
++  vfs::InMemoryFileSystem ClearLinuxFileSystem;
++  ClearLinuxFileSystem.addFile("/usr/lib/os-release", 0,
++      llvm::MemoryBuffer::getMemBuffer("NAME=\"Clear Linux OS\"\n"
++                                       "VERSION=1\n"
++                                       "ID=clear-linux-os\n"
++                                       "ID_LIKE=clear-linux-os\n"
++                                       "VERSION_ID=25530\n"
++                                       "PRETTY_NAME=\"Clear Linux OS\"\n"
++                                       "ANSI_COLOR=\"1;35\"\n"
++                                       "HOME_URL=\"https://clearlinux.org\"\n"
++                                       "SUPPORT_URL=\"https://clearlinux.org\"\n"
++                                       "BUG_REPORT_URL=\"mailto:dev@lists.clearlinux.org\"\n"
++                                       "PRIVACY_POLICY_URL=\"http://www.intel.com/privacy\"\n"));
++}
++
+ TEST(DistroTest, DetectWindowsAndCrossCompile) {
+ 
+   class CountingFileSystem : public llvm::vfs::ProxyFileSystem {
+-- 
+2.31.1
+

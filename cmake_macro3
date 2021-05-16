@@ -1,0 +1,70 @@
+cmake -G Ninja ../llvm \
+-DCMAKE_AR=/usr/bin/gcc-ar \
+-DCMAKE_NM=/usr/bin/gcc-nm \
+-DCMAKE_RANLIB=/usr/bin/gcc-ranlib \
+-DCMAKE_C_COMPILER=gcc \
+-DCMAKE_CXX_COMPILER=g++ \
+-DCMAKE_JOB_POOLS="full_jobs=6" \
+-DCMAKE_JOB_POOL_COMPILE="full_jobs" \
+-DCMAKE_JOB_POOL_LINK="full_jobs" \
+-DCMAKE_INSTALL_LIBDIR=%{_libdir} \
+-DCMAKE_INSTALL_PREFIX=/usr \
+-DCMAKE_INSTALL_SBINDIR=%{_sbindir} \
+-DLIB_INSTALL_DIR=%{_libdir} \
+-DLIB_SUFFIX=64 \
+-DLLVM_LIBDIR_SUFFIX=64 \
+-DBUILD_SHARED_LIBS:BOOL=OFF \
+-DCLANG_DEFAULT_CXX_STDLIB="libstdc++" \
+-DLLVM_STATIC_LINK_CXX_STDLIB:BOOL=ON \
+-DCLANG_DEFAULT_LINKER=lld \
+-DCLANG_DEFAULT_RTLIB="libgcc" \
+-DCLANG_DEFAULT_UNWINDLIB="libgcc" \
+-DLLVM_TARGETS_TO_BUILD="Native;AMDGPU" \
+-DLLVM_ENABLE_ASSERTIONS:BOOL=OFF \
+-DCLANG_LINK_CLANG_DYLIB:BOOL=OFF \
+-DLLVM_LINK_LLVM_DYLIB:BOOL=OFF \
+-DLLVM_BUILD_LLVM_DYLIB:BOOL=ON \
+-DCMAKE_BUILD_TYPE=Release \
+-DLLVM_ENABLE_PROJECTS="llvm;clang;clang-tools-extra;compiler-rt;lld;parallel-libs;polly;pstl" \
+-DCMAKE_C_FLAGS_RELEASE="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread" \
+-DCMAKE_CXX_FLAGS_RELEASE="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -fvisibility-inlines-hidden -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -fvisibility-inlines-hidden" \
+-DCMAKE_EXE_LINKER_FLAGS_RELEASE="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -lpthread" \
+-DCMAKE_MODULE_LINKER_FLAGS_RELEASE="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -lpthread" \
+-DCMAKE_SHARED_LINKER_FLAGS_RELEASE="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -lpthread" \
+-DCMAKE_C_FLAGS="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread" \
+-DCMAKE_CXX_FLAGS="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -fvisibility-inlines-hidden -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -fvisibility-inlines-hidden" \
+-DCMAKE_EXE_LINKER_FLAGS="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -lpthread" \
+-DCMAKE_MODULE_LINKER_FLAGS="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -lpthread" \
+-DCMAKE_SHARED_LINKER_FLAGS="-O3 --param=lto-max-streaming-parallelism=6 -flto=6 -ffat-lto-objects -Wl,--no-as-needed -fuse-ld=bfd -fuse-linker-plugin -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -march=native -mtune=native -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -fPIC -fno-stack-protector -fno-trapping-math -fno-math-errno -fgraphite-identity -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -mtls-dialect=gnu2 -Wl,-sort-common -Wl,--hash-style=gnu -fomit-frame-pointer -static-libstdc++ -static-libgcc -pthread -lpthread" \
+-DENABLE_LINKER_BUILD_ID:BOOL=ON \
+-DFFI_INCLUDE_DIR=`pkg-config --variable=includedir libffi` \
+-DLLVM_BINUTILS_INCDIR=/usr/include \
+-DLLVM_BUILD_EXAMPLES:BOOL=OFF \
+-DLLVM_BUILD_RUNTIME:BOOL=ON \
+-DLLVM_BUILD_TOOLS:BOOL=ON \
+-DCLANG_BUILD_TOOLS:BOOL=ON \
+-DLLVM_TOOL_CLANG_TOOLS_EXTRA_BUILD:BOOL=ON \
+-DLIBCLANG_BUILD_STATIC:BOOL=ON \
+-DLLVM_INCLUDE_TOOLS:BOOL=ON \
+-DLLVM_ENABLE_BINDINGS:BOOL=OFF \
+-DLLVM_ENABLE_FFI:BOOL=ON \
+-DLLVM_ENABLE_LIBCXX:BOOL=OFF \
+-DLLVM_ENABLE_PIC=ON \
+-DLLVM_ENABLE_RTTI:BOOL=ON \
+-DLLVM_ENABLE_EH:BOOL=ON \
+-DLLVM_ENABLE_ZLIB:BOOL=ON \
+-DLLVM_ENABLE_Z3_SOLVER:BOOL=ON \
+-DLLVM_ENABLE_LIBXML2:BOOL=ON \
+-DCLANG_ENABLE_STATIC_ANALYZER:BOOL=ON \
+-DLLVM_HOST_TRIPLE="x86_64-generic-linux" \
+-DLLVM_INCLUDE_TESTS:BOOL=OFF \
+-DCLANG_INCLUDE_TESTS:BOOL=OFF \
+-DLLVM_INSTALL_UTILS:BOOL=ON \
+-DLLVM_OPTIMIZED_TABLEGEN:BOOL=ON \
+-DLLVM_REQUIRES_RTTI:BOOL=ON \
+-DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
+-DCOMPILER_RT_BUILD_SANITIZERS:BOOL=ON \
+-DCOMPILER_RT_BUILD_XRAY:BOOL=ON \
+-DLLVM_TOOL_COMPILER_RT_BUILD:BOOL=ON \
+-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON \
+-Wno-dev

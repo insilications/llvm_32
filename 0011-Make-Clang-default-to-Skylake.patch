@@ -1,0 +1,27 @@
+From 67dcb02884206cb5efd7ace46879ecd3811203df Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Sun, 2 May 2021 18:15:39 -0300
+Subject: [PATCH 11/11] Make Clang default to Skylake
+
+---
+ clang/lib/Driver/ToolChains/Arch/X86.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/clang/lib/Driver/ToolChains/Arch/X86.cpp b/clang/lib/Driver/ToolChains/Arch/X86.cpp
+index 94a53f9d9e46..db4b813c2fb3 100644
+--- a/clang/lib/Driver/ToolChains/Arch/X86.cpp
++++ b/clang/lib/Driver/ToolChains/Arch/X86.cpp
+@@ -102,8 +102,8 @@ std::string x86::getX86TargetCPU(const ArgList &Args,
+   case llvm::Triple::FreeBSD:
+     return "i686";
+   default:
+-    // Fallback to p4.
+-    return "pentium4";
++    // Clear Linux defaults to "skylake"
++    return "skylake";
+   }
+ }
+ 
+-- 
+2.31.1
+

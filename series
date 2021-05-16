@@ -1,0 +1,8 @@
+0001-llvm-Improve-physical-core-count-detection.patch
+0002-llvm-Allow-one-more-FMA-fusion.patch
+0004-llvm-Add-the-LLVM-major-version-number-to-the-Gold-L.patch
+0005-llvm-Add-a-couple-more-f-instructions-that-GCC-has-t.patch
+# in source
+#0011-Make-Clang-default-to-Skylake.patch
+# in source
+#0012-Detect-Clear-Linux-and-apply-CLR-default-linker-opti.patch

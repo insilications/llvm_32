@@ -1,0 +1,3 @@
+#sd "/usr/lib32/libz3.so" "/usr/lib32/libz3.a" $(fd -uu --glob *.ninja)
+sd "/usr/lib32/libz.so" "/usr/lib32/libz.a" $(fd -uu --glob *.ninja)
+sd "/usr/lib32/libxml2.so" "/usr/lib32/libxml2.a /usr/lib32/liblzma.a /usr/lib32/libz.a" $(fd -uu --glob *.ninja)

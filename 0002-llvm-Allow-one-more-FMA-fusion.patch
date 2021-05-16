@@ -1,0 +1,25 @@
+From 176ff4af1eb73a4cf0f25c32faaa5118c4c8bddd Mon Sep 17 00:00:00 2001
+From: Francisco Boni <boboniboni@gmail.com>
+Date: Tue, 27 Apr 2021 16:13:53 -0300
+Subject: [PATCH 2/5] [llvm] Allow one more FMA fusion
+
+---
+ llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp b/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
+index 6a6f83827..fba3cdec7 100644
+--- a/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
++++ b/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
+@@ -12536,7 +12536,7 @@ SDValue DAGCombiner::visitFADDForFMACombine(SDNode *N) {
+   bool CanFuse = Options.UnsafeFPMath || isContractable(N);
+   bool CanReassociate =
+       Options.UnsafeFPMath || N->getFlags().hasAllowReassociation();
+-  bool AllowFusionGlobally = (Options.AllowFPOpFusion == FPOpFusion::Fast ||
++  bool AllowFusionGlobally = (Options.AllowFPOpFusion == FPOpFusion::Fast || Options.AllowFPOpFusion == FPOpFusion::Standard ||
+                               CanFuse || HasFMAD);
+   // If the addition is not contractable, do not combine.
+   if (!AllowFusionGlobally && !isContractable(N))
+-- 
+2.30.2
+

@@ -1,0 +1,3 @@
+#cmake --build . --target stage2 all
+#cmake --build . --target all
+#ninja --verbose stage2 all

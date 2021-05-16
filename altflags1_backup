@@ -1,0 +1,27 @@
+unset CCACHE_DISABLE
+export PATH="/usr/lib64/ccache/bin:$PATH"
+export CCACHE_NOHASHDIR=true
+export CCACHE_CPP2=true
+export CCACHE_SLOPPINESS=modules,include_file_mtime,include_file_ctime,time_macros,pch_defines,file_stat_matches,clang_index_store,system_headers,locale
+export CCACHE_DIR=/var/tmp/ccache
+export CCACHE_BASEDIR=/builddir/build/BUILD
+#
+unset ASFLAGS
+unset LDFLAGS
+unset CFLAGS
+unset CXXFLAGS
+unset FCFLAGS
+unset FFLAGS
+export V=1
+export VERBOSE=1
+#
+# export CFLAGS="-Wl,--no-as-needed -flto=8 -fuse-ld=bfd -fuse-linker-plugin --param=lto-max-streaming-parallelism=8 -ffat-lto-objects -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O3 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -fPIC"
+#
+# export CXXFLAGS="-Wl,--no-as-needed -flto=8 -fuse-ld=bfd -fuse-linker-plugin --param=lto-max-streaming-parallelism=8 -ffat-lto-objects -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O3 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -fvisibility-inlines-hidden -pipe -static-libstdc++ -static-libgcc -fPIC"
+#
+# export FCFLAGS="-Wl,--no-as-needed -flto=8 -fuse-ld=bfd -fuse-linker-plugin --param=lto-max-streaming-parallelism=8 -ffat-lto-objects -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O3 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -fPIC"
+#
+# export FFLAGS="-Wl,--no-as-needed -flto=8 -fuse-ld=bfd -fuse-linker-plugin --param=lto-max-streaming-parallelism=8 -ffat-lto-objects -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O3 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -fPIC"
+#
+# export LDFLAGS="-Wl,--no-as-needed -flto=8 -fuse-ld=bfd -fuse-linker-plugin --param=lto-max-streaming-parallelism=8 -ffat-lto-objects -Wl,--build-id=sha1 -Wno-error -Wl,-z,max-page-size=0x1000 -O3 -march=native -mtune=native -fgraphite-identity -Wall -Wl,--enable-new-dtags -Wl,-O2 -falign-functions=32 -flimit-function-alignment -fasynchronous-unwind-tables -fdevirtualize-at-ltrans -floop-nest-optimize -ftree-loop-distribute-patterns -ftree-loop-vectorize -ftree-vectorize -funroll-loops -malign-data=cacheline -Wl,-sort-common -Wp,-D_REENTRANT -pipe -static-libstdc++ -static-libgcc -fPIC"
+#
