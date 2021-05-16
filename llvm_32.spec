@@ -24,6 +24,7 @@ BuildRequires : bison
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3
 BuildRequires : buildreq-golang
+BuildRequires : ccache
 BuildRequires : cmake
 BuildRequires : dejagnu
 BuildRequires : docbook-utils
@@ -127,6 +128,23 @@ Polly - Polyhedral optimizations for LLVM
 -----------------------------------------
 http://polly.llvm.org/
 
+%package dev32
+Summary: dev32 components for the llvm_32 package.
+Group: Default
+
+%description dev32
+dev32 components for the llvm_32 package.
+
+
+%package staticdev32
+Summary: staticdev32 components for the llvm_32 package.
+Group: Default
+Requires: llvm_32-dev32 = %{version}-%{release}
+
+%description staticdev32
+staticdev32 components for the llvm_32 package.
+
+
 %prep
 %setup -q -n llvm-12.0.1
 cd %{_builddir}/llvm-12.0.1
@@ -141,7 +159,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1621164616
+export SOURCE_DATE_EPOCH=1621165510
 unset LD_AS_NEEDED
 mkdir -p clr-build32
 pushd clr-build32
@@ -242,7 +260,7 @@ cmake -G Ninja ../llvm \
     -DLLVM_TOOL_CLANG_TOOLS_EXTRA_BUILD:BOOL=OFF \
     -DLLVM_TOOL_COMPILER_RT_BUILD:BOOL=OFF \
     -DLLVM_USE_LINKER:STRING=bfd \
-    -DLLVM_HOST_TRIPLE="x86_64-generic-linux" \
+    -DLLVM_HOST_TRIPLE="i686-generic-linux" \
     -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
     -DLLVM_ENABLE_PLUGINS:BOOL=ON \
     -DLLVM_EXPORT_SYMBOLS_FOR_PLUGINS:BOOL=ON \
@@ -268,7 +286,7 @@ unset PKG_CONFIG_PATH
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1621164616
+export SOURCE_DATE_EPOCH=1621165510
 rm -rf %{buildroot}
 pushd clr-build32
 %ninja_install32
@@ -282,3 +300,116 @@ popd
 
 %files
 %defattr(-,root,root,-)
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/cmake/llvm/AddLLVM.cmake
+/usr/lib32/cmake/llvm/AddLLVMDefinitions.cmake
+/usr/lib32/cmake/llvm/AddOCaml.cmake
+/usr/lib32/cmake/llvm/AddSphinxTarget.cmake
+/usr/lib32/cmake/llvm/CheckAtomic.cmake
+/usr/lib32/cmake/llvm/CheckCompilerVersion.cmake
+/usr/lib32/cmake/llvm/CheckLinkerFlag.cmake
+/usr/lib32/cmake/llvm/ChooseMSVCCRT.cmake
+/usr/lib32/cmake/llvm/CrossCompile.cmake
+/usr/lib32/cmake/llvm/DetermineGCCCompatible.cmake
+/usr/lib32/cmake/llvm/FindGRPC.cmake
+/usr/lib32/cmake/llvm/FindLibpfm.cmake
+/usr/lib32/cmake/llvm/FindOCaml.cmake
+/usr/lib32/cmake/llvm/FindSphinx.cmake
+/usr/lib32/cmake/llvm/FindZ3.cmake
+/usr/lib32/cmake/llvm/GenerateVersionFromVCS.cmake
+/usr/lib32/cmake/llvm/GetLibraryName.cmake
+/usr/lib32/cmake/llvm/HandleLLVMOptions.cmake
+/usr/lib32/cmake/llvm/HandleLLVMStdlib.cmake
+/usr/lib32/cmake/llvm/LLVM-Build.cmake
+/usr/lib32/cmake/llvm/LLVM-Config.cmake
+/usr/lib32/cmake/llvm/LLVMConfig.cmake
+/usr/lib32/cmake/llvm/LLVMConfigExtensions.cmake
+/usr/lib32/cmake/llvm/LLVMConfigVersion.cmake
+/usr/lib32/cmake/llvm/LLVMDistributionSupport.cmake
+/usr/lib32/cmake/llvm/LLVMExports-release.cmake
+/usr/lib32/cmake/llvm/LLVMExports.cmake
+/usr/lib32/cmake/llvm/LLVMExternalProjectUtils.cmake
+/usr/lib32/cmake/llvm/LLVMInstallSymlink.cmake
+/usr/lib32/cmake/llvm/LLVMProcessSources.cmake
+/usr/lib32/cmake/llvm/TableGen.cmake
+/usr/lib32/cmake/llvm/TensorFlowCompile.cmake
+/usr/lib32/cmake/llvm/UseLibtool.cmake
+/usr/lib32/cmake/llvm/VersionFromVCS.cmake
+
+%files staticdev32
+%defattr(-,root,root,-)
+/usr/lib32/libLLVMAggressiveInstCombine.a
+/usr/lib32/libLLVMAnalysis.a
+/usr/lib32/libLLVMAsmParser.a
+/usr/lib32/libLLVMAsmPrinter.a
+/usr/lib32/libLLVMBinaryFormat.a
+/usr/lib32/libLLVMBitReader.a
+/usr/lib32/libLLVMBitWriter.a
+/usr/lib32/libLLVMBitstreamReader.a
+/usr/lib32/libLLVMCFGuard.a
+/usr/lib32/libLLVMCodeGen.a
+/usr/lib32/libLLVMCore.a
+/usr/lib32/libLLVMCoroutines.a
+/usr/lib32/libLLVMCoverage.a
+/usr/lib32/libLLVMDWARFLinker.a
+/usr/lib32/libLLVMDebugInfoCodeView.a
+/usr/lib32/libLLVMDebugInfoDWARF.a
+/usr/lib32/libLLVMDebugInfoGSYM.a
+/usr/lib32/libLLVMDebugInfoMSF.a
+/usr/lib32/libLLVMDebugInfoPDB.a
+/usr/lib32/libLLVMDemangle.a
+/usr/lib32/libLLVMDlltoolDriver.a
+/usr/lib32/libLLVMExecutionEngine.a
+/usr/lib32/libLLVMExtensions.a
+/usr/lib32/libLLVMFileCheck.a
+/usr/lib32/libLLVMFrontendOpenACC.a
+/usr/lib32/libLLVMFrontendOpenMP.a
+/usr/lib32/libLLVMFuzzMutate.a
+/usr/lib32/libLLVMGlobalISel.a
+/usr/lib32/libLLVMHelloNew.a
+/usr/lib32/libLLVMIRReader.a
+/usr/lib32/libLLVMInstCombine.a
+/usr/lib32/libLLVMInstrumentation.a
+/usr/lib32/libLLVMInterfaceStub.a
+/usr/lib32/libLLVMInterpreter.a
+/usr/lib32/libLLVMJITLink.a
+/usr/lib32/libLLVMLTO.a
+/usr/lib32/libLLVMLibDriver.a
+/usr/lib32/libLLVMLineEditor.a
+/usr/lib32/libLLVMLinker.a
+/usr/lib32/libLLVMMC.a
+/usr/lib32/libLLVMMCA.a
+/usr/lib32/libLLVMMCDisassembler.a
+/usr/lib32/libLLVMMCJIT.a
+/usr/lib32/libLLVMMCParser.a
+/usr/lib32/libLLVMMIRParser.a
+/usr/lib32/libLLVMObjCARCOpts.a
+/usr/lib32/libLLVMObject.a
+/usr/lib32/libLLVMObjectYAML.a
+/usr/lib32/libLLVMOption.a
+/usr/lib32/libLLVMOrcJIT.a
+/usr/lib32/libLLVMOrcShared.a
+/usr/lib32/libLLVMOrcTargetProcess.a
+/usr/lib32/libLLVMPasses.a
+/usr/lib32/libLLVMProfileData.a
+/usr/lib32/libLLVMRemarks.a
+/usr/lib32/libLLVMRuntimeDyld.a
+/usr/lib32/libLLVMScalarOpts.a
+/usr/lib32/libLLVMSelectionDAG.a
+/usr/lib32/libLLVMSupport.a
+/usr/lib32/libLLVMSymbolize.a
+/usr/lib32/libLLVMTableGen.a
+/usr/lib32/libLLVMTarget.a
+/usr/lib32/libLLVMTextAPI.a
+/usr/lib32/libLLVMTransformUtils.a
+/usr/lib32/libLLVMVectorize.a
+/usr/lib32/libLLVMWindowsManifest.a
+/usr/lib32/libLLVMX86AsmParser.a
+/usr/lib32/libLLVMX86CodeGen.a
+/usr/lib32/libLLVMX86Desc.a
+/usr/lib32/libLLVMX86Disassembler.a
+/usr/lib32/libLLVMX86Info.a
+/usr/lib32/libLLVMXRay.a
+/usr/lib32/libLLVMipo.a
